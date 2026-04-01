@@ -1,57 +1,44 @@
-'use client'
-import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Navbar from '@/components/layout/Navbar'
 
-const SIDEBAR = [
-  { href: '/dashboard', label: 'Overview', icon: '🏠' },
-  { href: '/dashboard/scores', label: 'My Scores', icon: '⛳' },
-  { href: '/dashboard/draws', label: 'Draw History', icon: '🎰' },
-  { href: '/dashboard/charity', label: 'My Charity', icon: '💜' },
-  { href: '/dashboard/winnings', label: 'Winnings', icon: '🏆' },
-  { href: '/dashboard/subscription', label: 'Subscription', icon: '💳' },
-  { href: '/dashboard/notifications', label: 'Notifications', icon: '🔔' },
-]
+export default async function DrawHistoryPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
+  const { data: entries } = await supabase
+    .from('draw_entries')
+    .select('*, draws(month, year, status, winning_numbers)')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
 
-export default function DrawHistoryPage() {
-  const [entries, setEntries] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
-  useEffect(() => {
-    async function load() {
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { window.location.href = '/login'; return }
-
-      const { data } = await supabase
-        .from('draw_entries')
-        .select('*, draws(month, year, status, winning_numbers, jackpot_rolled_over)')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-
-      setEntries(data || [])
-      setLoading(false)
-    }
-    load()
-  }, [])
+  function countMatches(scores: number[], winning: number[]): number {
+    if (!scores || !winning) return 0
+    return scores.filter(s => winning.includes(s)).length
+  }
 
   return (
-    <div className="page-wrapper">
-      <nav className="navbar">
-        <div className="container navbar-inner">
-          <Link href="/" className="navbar-logo">GolfGive</Link>
-          <div className="navbar-actions">
-            <Link href="/dashboard" className="btn btn-secondary btn-sm">← Dashboard</Link>
-          </div>
-        </div>
-      </nav>
-
+    <div className="page-wrapper" style={{ background: 'var(--bg-primary)' }}>
+      <Navbar />
       <div className="dashboard-layout">
         <aside className="sidebar">
-          {SIDEBAR.map(item => (
-            <Link key={item.href} href={item.href} className={`sidebar-link ${item.href === '/dashboard/draws' ? 'active' : ''}`}>
+          <div style={{ marginBottom: '2rem', padding: '0 0.5rem' }}>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Dashboard</p>
+          </div>
+          {[
+            { href: '/dashboard', label: 'Overview', icon: '🏠' },
+            { href: '/dashboard/scores', label: 'My Scores', icon: '⛳' },
+            { href: '/dashboard/draws', label: 'Draw History', icon: '🎰' },
+            { href: '/dashboard/charity', label: 'My Charity', icon: '💜' },
+            { href: '/dashboard/winnings', label: 'Winnings', icon: '🏆' },
+            { href: '/dashboard/subscription', label: 'Subscription', icon: '💳' },
+            { href: '/dashboard/notifications', label: 'Notifications', icon: '🔔' },
+          ].map(item => (
+            <Link key={item.href} href={item.href} className={`sidebar-link${item.href === '/dashboard/draws' ? ' active' : ''}`}>
               <span>{item.icon}</span><span>{item.label}</span>
             </Link>
           ))}
@@ -59,79 +46,85 @@ export default function DrawHistoryPage() {
 
         <main className="dashboard-content">
           <div className="dashboard-header">
-            <h1 style={{ fontSize: '1.8rem' }}>🎰 Draw History</h1>
-            <p style={{ color: 'var(--text-muted)' }}>All draws you've participated in.</p>
+            <h1 style={{ fontSize: '1.8rem', marginBottom: '0.25rem' }}>🎰 Draw History</h1>
+            <p style={{ color: 'var(--text-muted)' }}>Your participation history across all monthly draws.</p>
           </div>
 
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-              <span className="spinner" style={{ width: 32, height: 32, margin: '0 auto', display: 'block' }} />
-            </div>
-          ) : entries.length === 0 ? (
+          {!entries || entries.length === 0 ? (
             <div className="card" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
               <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🎰</div>
-              <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>No draw participation yet</h3>
-              <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '0.9rem' }}>
-                You'll be auto-enrolled in draws while you have an active subscription and at least one score logged.
+              <h3 style={{ marginBottom: '0.75rem' }}>No draw history yet</h3>
+              <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
+                Once you have an active subscription and scores logged, you&apos;ll be automatically entered into monthly draws.
               </p>
-              <Link href="/dashboard/scores" className="btn btn-primary btn-sm">Add Your First Score</Link>
+              <Link href="/dashboard/scores" className="btn btn-primary">Log Your Scores</Link>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {entries.map((entry: any) => {
                 const draw = entry.draws
+                const scores: number[] = entry.scores_snapshot || []
+                const winning: number[] = draw?.winning_numbers || []
+                const matches = countMatches(scores, winning)
                 const isPublished = draw?.status === 'published'
-                const winningNums: number[] = draw?.winning_numbers || []
-                const snapshot: number[] = entry.scores_snapshot || []
-                const matchCount = snapshot.filter((s: number) => winningNums.includes(s)).length
 
                 return (
-                  <div key={entry.id} className="card" style={{ padding: '1.75rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: isPublished ? '1.25rem' : 0 }}>
+                  <div key={entry.id} className="card" style={{ padding: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <div>
-                        <h3 style={{ fontSize: '1.05rem', marginBottom: '0.25rem' }}>
-                          {draw ? `${MONTHS[draw.month - 1]} ${draw.year}` : 'Draw'}
+                        <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>
+                          {draw ? `${MONTHS[(draw.month || 1) - 1]} ${draw.year}` : 'Unknown Draw'}
                         </h3>
-                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                          Your scores: {snapshot.join(', ') || 'No scores'}
-                        </p>
+                        <span className={`badge badge-${isPublished ? 'published' : 'pending'}`}>
+                          {draw?.status || 'unknown'}
+                        </span>
                       </div>
-                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                        {isPublished && matchCount >= 3 && (
-                          <span className="badge badge-active">🏆 {matchCount}-Match Winner!</span>
-                        )}
-                        <span className={`badge badge-${draw?.status || 'draft'}`}>{draw?.status || 'Draft'}</span>
-                      </div>
+                      {isPublished && matches > 0 && (
+                        <div style={{
+                          background: matches >= 5 ? 'rgba(245,158,11,0.15)' : 'rgba(168,85,247,0.15)',
+                          border: `1px solid ${matches >= 5 ? 'rgba(245,158,11,0.4)' : 'rgba(168,85,247,0.4)'}`,
+                          borderRadius: 'var(--radius)',
+                          padding: '0.5rem 1rem',
+                          color: matches >= 5 ? 'var(--gold)' : 'var(--purple-light)',
+                          fontWeight: 700,
+                          fontSize: '0.9rem'
+                        }}>
+                          🎯 {matches} Match{matches !== 1 ? 'es' : ''}!
+                        </div>
+                      )}
                     </div>
 
-                    {isPublished && winningNums.length > 0 && (
+                    <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
                       <div>
-                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>Winning Numbers</p>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Your Scores</p>
                         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                          {winningNums.map((num: number) => {
-                            const isMatch = snapshot.includes(num)
-                            return (
-                              <div key={num} style={{
-                                width: '38px', height: '38px', borderRadius: '50%',
-                                background: isMatch ? 'var(--gradient-brand)' : 'rgba(255,255,255,0.05)',
-                                border: isMatch ? 'none' : '1px solid var(--border)',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                fontFamily: 'Outfit, sans-serif', fontWeight: 700, fontSize: '0.95rem',
-                                color: isMatch ? 'white' : 'var(--text-muted)',
-                                boxShadow: isMatch ? '0 0 12px rgba(168,85,247,0.4)' : 'none',
-                              }}>
-                                {num}
-                              </div>
-                            )
-                          })}
+                          {scores.length > 0 ? scores.map((s, i) => (
+                            <span key={i} style={{
+                              width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              fontFamily: 'Outfit', fontWeight: 800, fontSize: '1rem',
+                              background: isPublished && winning.includes(s) ? 'var(--gradient-brand)' : 'rgba(255,255,255,0.06)',
+                              border: isPublished && winning.includes(s) ? 'none' : '1px solid var(--border)',
+                              color: isPublished && winning.includes(s) ? 'white' : 'var(--text-secondary)'
+                            }}>{s}</span>
+                          )) : <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No scores recorded</span>}
                         </div>
-                        {matchCount > 0 && matchCount < 3 && (
-                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                            You matched {matchCount} number{matchCount !== 1 ? 's' : ''} — need 3 to win a prize
-                          </p>
-                        )}
                       </div>
-                    )}
+
+                      {isPublished && winning.length > 0 && (
+                        <div>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Winning Numbers</p>
+                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            {winning.map((n, i) => (
+                              <span key={i} style={{
+                                width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontFamily: 'Outfit', fontWeight: 800, fontSize: '1rem',
+                                background: 'var(--gradient-gold)', color: 'white'
+                              }}>{n}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )
               })}

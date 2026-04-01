@@ -1,108 +1,100 @@
-'use client'
-import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Navbar from '@/components/layout/Navbar'
 
-const SIDEBAR = [
-  { href: '/dashboard', label: 'Overview', icon: '🏠' },
-  { href: '/dashboard/scores', label: 'My Scores', icon: '⛳' },
-  { href: '/dashboard/draws', label: 'Draw History', icon: '🎰' },
-  { href: '/dashboard/charity', label: 'My Charity', icon: '💜' },
-  { href: '/dashboard/winnings', label: 'Winnings', icon: '🏆' },
-  { href: '/dashboard/subscription', label: 'Subscription', icon: '💳' },
-  { href: '/dashboard/notifications', label: 'Notifications', icon: '🔔' },
-]
+export default async function NotificationsPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
-export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data: notifications } = await supabase
+    .from('notifications')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
 
-  useEffect(() => { loadNotifications() }, [])
-
-  async function loadNotifications() {
-    const res = await fetch('/api/notifications')
-    const data = await res.json()
-    setNotifications(data.notifications || [])
-    setLoading(false)
-  }
-
-  async function markAllRead() {
-    await fetch('/api/notifications', { method: 'PATCH' })
-    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })))
-  }
+  const unreadCount = notifications?.filter((n: any) => !n.is_read).length || 0
 
   const typeIcon: Record<string, string> = {
     draw_result: '🎰',
-    winner_status: '🏆',
-    subscription_alert: '💳',
+    winner: '🏆',
+    subscription: '💳',
+    charity: '💜',
     general: '🔔',
   }
 
-  const unreadCount = notifications.filter(n => !n.is_read).length
-
   return (
-    <div className="page-wrapper">
-      <nav className="navbar">
-        <div className="container navbar-inner">
-          <Link href="/" className="navbar-logo">GolfGive</Link>
-          <div className="navbar-actions">
-            <Link href="/dashboard" className="btn btn-secondary btn-sm">← Dashboard</Link>
-          </div>
-        </div>
-      </nav>
-
+    <div className="page-wrapper" style={{ background: 'var(--bg-primary)' }}>
+      <Navbar />
       <div className="dashboard-layout">
         <aside className="sidebar">
-          {SIDEBAR.map(item => (
-            <Link key={item.href} href={item.href} className={`sidebar-link ${item.href === '/dashboard/notifications' ? 'active' : ''}`}>
+          <div style={{ marginBottom: '2rem', padding: '0 0.5rem' }}>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Dashboard</p>
+          </div>
+          {[
+            { href: '/dashboard', label: 'Overview', icon: '🏠' },
+            { href: '/dashboard/scores', label: 'My Scores', icon: '⛳' },
+            { href: '/dashboard/draws', label: 'Draw History', icon: '🎰' },
+            { href: '/dashboard/charity', label: 'My Charity', icon: '💜' },
+            { href: '/dashboard/winnings', label: 'Winnings', icon: '🏆' },
+            { href: '/dashboard/subscription', label: 'Subscription', icon: '💳' },
+            { href: '/dashboard/notifications', label: `Notifications${unreadCount > 0 ? ` (${unreadCount})` : ''}`, icon: '🔔' },
+          ].map(item => (
+            <Link key={item.href} href={item.href} className={`sidebar-link${item.href === '/dashboard/notifications' ? ' active' : ''}`}>
               <span>{item.icon}</span><span>{item.label}</span>
             </Link>
           ))}
         </aside>
 
         <main className="dashboard-content">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <h1 style={{ fontSize: '1.8rem' }}>🔔 Notifications</h1>
-              {unreadCount > 0 && (
-                <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>{unreadCount} unread</p>
-              )}
+              <h1 style={{ fontSize: '1.8rem', marginBottom: '0.25rem' }}>🔔 Notifications</h1>
+              <p style={{ color: 'var(--text-muted)' }}>
+                {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount !== 1 ? 's' : ''}` : 'All caught up!'}
+              </p>
             </div>
             {unreadCount > 0 && (
-              <button onClick={markAllRead} className="btn btn-secondary btn-sm">Mark all as read</button>
+              <form action="/api/notifications/mark-all-read" method="POST">
+                <button type="submit" className="btn btn-secondary btn-sm">Mark all read</button>
+              </form>
             )}
           </div>
 
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '4rem' }}>
-              <span className="spinner" style={{ width: 32, height: 32, margin: '0 auto', display: 'block' }} />
-            </div>
-          ) : notifications.length === 0 ? (
+          {!notifications || notifications.length === 0 ? (
             <div className="card" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
               <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🔔</div>
-              <h3 style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>All caught up!</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No notifications yet. We'll alert you when the draw results are published.</p>
+              <h3 style={{ marginBottom: '0.75rem' }}>No notifications yet</h3>
+              <p style={{ color: 'var(--text-muted)' }}>
+                You&apos;ll be notified about draw results, prize claims, and subscription updates here.
+              </p>
             </div>
           ) : (
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-              {notifications.map((n: any, i: number) => (
-                <div key={n.id} className={`notification-item ${!n.is_read ? 'unread' : ''}`} style={{
-                  borderBottom: i < notifications.length - 1 ? '1px solid var(--border)' : 'none',
-                  borderRadius: 0,
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {notifications.map((n: any) => (
+                <div key={n.id} className="card" style={{
+                  padding: '1.25rem 1.5rem',
+                  borderColor: !n.is_read ? 'rgba(168,85,247,0.3)' : 'var(--border)',
+                  background: !n.is_read ? 'rgba(168,85,247,0.04)' : 'var(--bg-card)',
+                  transition: 'all 0.2s'
                 }}>
-                  <div style={{ flexShrink: 0, fontSize: '1.5rem', lineHeight: 1.2 }}>
-                    {typeIcon[n.type] || '🔔'}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
-                      <p style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: n.is_read ? 400 : 600, marginBottom: '0.2rem' }}>
-                        {n.title}
-                      </p>
-                      {!n.is_read && <div className="notification-dot" style={{ flexShrink: 0, marginTop: 4 }} />}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                    <span style={{ fontSize: '1.5rem', lineHeight: 1, flexShrink: 0 }}>
+                      {typeIcon[n.type] || '🔔'}
+                    </span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '0.25rem' }}>
+                        <p style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.95rem' }}>{n.title}</p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+                          {!n.is_read && <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--purple)', display: 'inline-block' }} />}
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                            {new Date(n.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                      </div>
+                      <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>{n.message}</p>
                     </div>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.35rem', lineHeight: '1.5' }}>{n.message}</p>
-                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                      {new Date(n.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                    </p>
                   </div>
                 </div>
               ))}

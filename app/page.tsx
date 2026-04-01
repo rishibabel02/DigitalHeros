@@ -10,25 +10,25 @@ export default async function HomePage() {
       {/* ─── HERO ───────────────────────────────────────────── */}
       <section className="hero">
         <div className="hero-bg" />
-        <div className="orb orb-purple" style={{ width: 600, height: 600, top: -200, left: -200 }} />
-        <div className="orb orb-pink" style={{ width: 400, height: 400, bottom: 0, right: -100 }} />
+        <div className="orb orb-purple" style={{ width: 700, height: 700, top: -250, left: -200 }} />
+        <div className="orb orb-pink" style={{ width: 500, height: 500, bottom: -100, right: -150 }} />
 
-        <div className="container hero-content">
-          <div className="hero-badge">
+        <div className="container hero-content" style={{ textAlign: 'center', maxWidth: 860 }}>
+          <div className="hero-badge" style={{ margin: '0 auto 1.5rem' }}>
             💜 Every subscription supports charity
           </div>
 
-          <h1 className="hero-title">
+          <h1 className="hero-title" style={{ fontSize: 'clamp(3.5rem, 7vw, 6.5rem)', textAlign: 'center' }}>
             Swing for<br />
             <span className="gradient-text">something bigger.</span>
           </h1>
 
-          <p className="hero-subtitle">
-            Enter your golf scores. Participate in monthly prize draws worth thousands.
-            Support a charity you believe in — automatically, every month.
+          <p className="hero-subtitle" style={{ margin: '0 auto 2.5rem', textAlign: 'center', maxWidth: 600 }}>
+            Enter your golf scores. Compete in monthly prize draws worth thousands.
+            Every subscription automatically supports a charity you believe in.
           </p>
 
-          <div className="hero-actions">
+          <div className="hero-actions" style={{ justifyContent: 'center' }}>
             <Link href="/signup" className="btn btn-primary btn-lg animate-pulse-glow">
               Start Playing for Good →
             </Link>
@@ -37,22 +37,22 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="hero-stats">
-            <div>
+          <div className="hero-stats" style={{ justifyContent: 'center', borderTop: '1px solid var(--border)', marginTop: '4rem', paddingTop: '3rem' }}>
+            <div style={{ textAlign: 'center' }}>
               <div className="hero-stat-value">£29.99</div>
-              <div className="hero-stat-label">Per month — cancel anytime</div>
+              <div className="hero-stat-label">Per month</div>
             </div>
-            <div>
+            <div style={{ textAlign: 'center' }}>
               <div className="hero-stat-value">Monthly</div>
               <div className="hero-stat-label">Prize draws</div>
             </div>
-            <div>
+            <div style={{ textAlign: 'center' }}>
               <div className="hero-stat-value">10%+</div>
-              <div className="hero-stat-label">To charity, every month</div>
+              <div className="hero-stat-label">To charity</div>
             </div>
-            <div>
+            <div style={{ textAlign: 'center' }}>
               <div className="hero-stat-value">5</div>
-              <div className="hero-stat-label">Charities to choose from</div>
+              <div className="hero-stat-label">Charities</div>
             </div>
           </div>
         </div>
