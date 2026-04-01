@@ -91,7 +91,7 @@ export default async function WinningsPage() {
 
                   {/* Proof upload */}
                   {w.status === 'pending' && !w.proof_url && (
-                    <WinnerProofUpload verificationId={w.id} />
+                    <WinnerProofUpload verificationId={w.id} currentStatus={w.status} />
                   )}
 
                   {w.proof_url && (
