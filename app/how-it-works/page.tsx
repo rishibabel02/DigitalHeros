@@ -13,7 +13,7 @@ const steps = [
     n: 1,
     icon: '🔑',
     title: 'Subscribe',
-    desc: 'Choose monthly (£29.99) or yearly (£299). Select a charity. You are in from your very first month.',
+    desc: 'Choose monthly ($499) or yearly ($4,999). Select a charity. You are in from your very first month.',
     detail: 'Cancel anytime. No hidden fees. Your billing is handled securely by Stripe.',
   },
   {

@@ -39,7 +39,7 @@ export default async function HomePage() {
 
           <div className="hero-stats" style={{ justifyContent: 'center', borderTop: '1px solid var(--border)', marginTop: '4rem', paddingTop: '3rem' }}>
             <div style={{ textAlign: 'center' }}>
-              <div className="hero-stat-value">£29.99</div>
+              <div className="hero-stat-value">$499</div>
               <div className="hero-stat-label">Per month</div>
             </div>
             <div style={{ textAlign: 'center' }}>
@@ -71,7 +71,7 @@ export default async function HomePage() {
 
           <div className="steps-grid">
             {[
-              { n: 1, icon: '🔑', title: 'Subscribe', desc: 'Choose monthly (£29.99) or yearly (£299) and select your charity. Cancel anytime.' },
+              { n: 1, icon: '🔑', title: 'Subscribe', desc: 'Choose monthly ($499) or yearly ($4,999) and select your charity. Cancel anytime.' },
               { n: 2, icon: '⛳', title: 'Enter Scores', desc: 'Log your latest 5 Stableford scores. We keep the most recent automatically.' },
               { n: 3, icon: '🎰', title: 'Monthly Draw', desc: 'Your scores enter you into our monthly draw. Match 3, 4, or 5 numbers to win.' },
               { n: 4, icon: '💜', title: 'Give Back', desc: 'A portion of every subscription goes directly to your chosen charity, every month.' },
@@ -159,7 +159,7 @@ export default async function HomePage() {
                 Join a community of golfers making a real difference — one score at a time.
               </p>
               <Link href="/signup" className="btn btn-primary btn-lg animate-pulse-glow">
-                Subscribe Now — From £29.99/mo
+                Subscribe Now — From $499/mo
               </Link>
             </div>
           </div>

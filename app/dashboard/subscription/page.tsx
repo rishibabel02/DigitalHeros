@@ -69,7 +69,7 @@ export default async function SubscriptionPage() {
               <div className="plans-grid">
                 <div className="card plan-card">
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Monthly</p>
-                  <div className="plan-price gradient-text">£29.99</div>
+                  <div className="plan-price gradient-text">$499</div>
                   <div className="plan-interval">per month</div>
                   <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>Full access, cancel anytime</p>
                   <SubscribeButton plan="monthly" label="Subscribe Monthly" />
@@ -77,8 +77,8 @@ export default async function SubscriptionPage() {
                 <div className="card plan-card featured">
                   <div className="plan-featured-badge">BEST VALUE</div>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Yearly</p>
-                  <div className="plan-price gradient-text">£299</div>
-                  <div className="plan-interval">per year · Save £61</div>
+                  <div className="plan-price gradient-text">$4,999</div>
+                  <div className="plan-interval">per year · Save $989</div>
                   <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>12 months for the price of 10</p>
                   <SubscribeButton plan="yearly" label="Subscribe Yearly" />
                 </div>

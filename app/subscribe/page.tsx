@@ -8,7 +8,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Subscribe — GolfGive',
-  description: 'Choose your GolfGive plan. Monthly at £29.99 or yearly at £299 (save £61). Start competing in prize draws while supporting charity.',
+  description: 'Choose your GolfGive plan. Monthly at $499 or yearly at $4,999 (save $989). Start competing in prize draws while supporting charity.',
 }
 
 export default async function SubscribePage() {
@@ -41,7 +41,7 @@ export default async function SubscribePage() {
             {/* Monthly */}
             <div className="card plan-card">
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Monthly</p>
-              <div className="plan-price gradient-text">£29.99</div>
+              <div className="plan-price gradient-text">$499</div>
               <div className="plan-interval">per month · billed monthly</div>
 
               <ul style={{ listStyle: 'none', marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', textAlign: 'left' }}>
@@ -63,13 +63,13 @@ export default async function SubscribePage() {
 
             {/* Yearly */}
             <div className="card plan-card featured">
-              <div className="plan-featured-badge">BEST VALUE — SAVE £61</div>
+              <div className="plan-featured-badge">BEST VALUE — SAVE $989</div>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Yearly</p>
-              <div className="plan-price gradient-text">£299</div>
+              <div className="plan-price gradient-text">$4,999</div>
               <div className="plan-interval">per year · 12 months for the price of 10</div>
 
               <ul style={{ listStyle: 'none', marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', textAlign: 'left' }}>
-                {['12 monthly draw entries', 'Log up to 5 scores', 'Charity contribution (min 10%)', 'Full dashboard access', 'Priority winner support', 'Best value — save £61'].map(f => (
+                {['12 monthly draw entries', 'Log up to 5 scores', 'Charity contribution (min 10%)', 'Full dashboard access', 'Priority winner support', 'Best value — save $989'].map(f => (
                   <li key={f} style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'flex', gap: '0.5rem' }}>
                     <span style={{ color: 'var(--green)', fontWeight: 700 }}>✓</span> {f}
                   </li>

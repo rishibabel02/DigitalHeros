@@ -142,7 +142,7 @@ export default async function CharitiesPage() {
           <p style={{ marginBottom: '2rem', fontSize: '1rem', color: 'var(--text-muted)' }}>
             Join GolfGive and start contributing to your chosen charity automatically, every month.
           </p>
-          <Link href="/signup" className="btn btn-primary btn-lg">Get Started — From £29.99/mo</Link>
+          <Link href="/signup" className="btn btn-primary btn-lg">Get Started — From $499/mo</Link>
         </div>
       </section>
 
