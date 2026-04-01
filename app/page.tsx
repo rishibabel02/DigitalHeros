@@ -1,65 +1,172 @@
-import Image from "next/image";
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
+import Link from 'next/link'
 
-export default function Home() {
+export default async function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="page-wrapper">
+      <Navbar />
+
+      {/* ─── HERO ───────────────────────────────────────────── */}
+      <section className="hero">
+        <div className="hero-bg" />
+        <div className="orb orb-purple" style={{ width: 600, height: 600, top: -200, left: -200 }} />
+        <div className="orb orb-pink" style={{ width: 400, height: 400, bottom: 0, right: -100 }} />
+
+        <div className="container hero-content">
+          <div className="hero-badge">
+            💜 Every subscription supports charity
+          </div>
+
+          <h1 className="hero-title">
+            Swing for<br />
+            <span className="gradient-text">something bigger.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="hero-subtitle">
+            Enter your golf scores. Participate in monthly prize draws worth thousands.
+            Support a charity you believe in — automatically, every month.
           </p>
+
+          <div className="hero-actions">
+            <Link href="/signup" className="btn btn-primary btn-lg animate-pulse-glow">
+              Start Playing for Good →
+            </Link>
+            <Link href="/how-it-works" className="btn btn-secondary btn-lg">
+              How It Works
+            </Link>
+          </div>
+
+          <div className="hero-stats">
+            <div>
+              <div className="hero-stat-value">£29.99</div>
+              <div className="hero-stat-label">Per month — cancel anytime</div>
+            </div>
+            <div>
+              <div className="hero-stat-value">Monthly</div>
+              <div className="hero-stat-label">Prize draws</div>
+            </div>
+            <div>
+              <div className="hero-stat-value">10%+</div>
+              <div className="hero-stat-label">To charity, every month</div>
+            </div>
+            <div>
+              <div className="hero-stat-value">5</div>
+              <div className="hero-stat-label">Charities to choose from</div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* ─── HOW IT WORKS ───────────────────────────────────── */}
+      <section style={{ background: 'var(--bg-secondary)' }}>
+        <div className="container">
+          <div className="section-header">
+            <div className="section-tag">Simple Process</div>
+            <h2>How GolfGive Works</h2>
+            <p style={{ maxWidth: 520, margin: '1rem auto' }}>
+              Four steps between you and making a real difference — while competing for life-changing prizes.
+            </p>
+          </div>
+
+          <div className="steps-grid">
+            {[
+              { n: 1, icon: '🔑', title: 'Subscribe', desc: 'Choose monthly (£29.99) or yearly (£299) and select your charity. Cancel anytime.' },
+              { n: 2, icon: '⛳', title: 'Enter Scores', desc: 'Log your latest 5 Stableford scores. We keep the most recent automatically.' },
+              { n: 3, icon: '🎰', title: 'Monthly Draw', desc: 'Your scores enter you into our monthly draw. Match 3, 4, or 5 numbers to win.' },
+              { n: 4, icon: '💜', title: 'Give Back', desc: 'A portion of every subscription goes directly to your chosen charity, every month.' },
+            ].map((step) => (
+              <div key={step.n} className="card step-card">
+                <div className="step-number">{step.n}</div>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>{step.icon}</div>
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.75rem' }}>{step.title}</h3>
+                <p style={{ fontSize: '0.95rem', lineHeight: '1.7' }}>{step.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* ─── PRIZE POOL ─────────────────────────────────────── */}
+      <section>
+        <div className="container">
+          <div className="section-header">
+            <div className="section-tag">Prize Structure</div>
+            <h2>What You Could Win</h2>
+            <p style={{ maxWidth: 520, margin: '1rem auto' }}>
+              Monthly draws with three prize tiers. The jackpot rolls over if unclaimed — getting bigger every month.
+            </p>
+          </div>
+
+          <div className="prize-tiers">
+            <div className="prize-tier-card tier-jackpot">
+              <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🏆</div>
+              <h3 style={{ color: 'var(--gold)' }}>5-Number Match</h3>
+              <div className="prize-amount gradient-text-gold">JACKPOT</div>
+              <p style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>40% of monthly pool · Rolls over if unclaimed</p>
+            </div>
+            <div className="prize-tier-card tier-four">
+              <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🥈</div>
+              <h3>4-Number Match</h3>
+              <div className="prize-amount gradient-text">35%</div>
+              <p style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>35% of monthly prize pool</p>
+            </div>
+            <div className="prize-tier-card tier-three">
+              <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🥉</div>
+              <h3>3-Number Match</h3>
+              <div className="prize-amount" style={{ color: 'var(--blue)' }}>25%</div>
+              <p style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>25% of monthly prize pool</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FEATURED CHARITY ───────────────────────────────── */}
+      <section style={{ background: 'var(--bg-secondary)' }}>
+        <div className="container">
+          <div className="section-header">
+            <div className="section-tag">Featured Charity</div>
+          </div>
+          <div className="card" style={{
+            background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(236,72,153,0.06) 100%)',
+            border: '1px solid rgba(168,85,247,0.3)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '3rem'
+          }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎗️</div>
+            <h2 style={{ marginBottom: '1rem' }}>Cancer Research UK</h2>
+            <p style={{ maxWidth: 600, marginBottom: '2rem', fontSize: '1rem', lineHeight: '1.8' }}>
+              Fighting cancer through world-class research. This month's spotlight charity receives contributions
+              from every active subscriber. Every swing you play funds groundbreaking science.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Link href="/charities" className="btn btn-primary">View All Charities</Link>
+              <Link href="/signup" className="btn btn-secondary">Start Contributing</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CTA ─────────────────────────────────────────────── */}
+      <section>
+        <div className="container" style={{ textAlign: 'center' }}>
+          <div style={{ position: 'relative' }}>
+            <div className="orb orb-purple" style={{ width: 400, height: 400, top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <h2 style={{ marginBottom: '1rem' }}>
+                Ready to swing for <span className="gradient-text">something bigger?</span>
+              </h2>
+              <p style={{ fontSize: '1.1rem', marginBottom: '2.5rem', maxWidth: 500, margin: '0 auto 2.5rem' }}>
+                Join a community of golfers making a real difference — one score at a time.
+              </p>
+              <Link href="/signup" className="btn btn-primary btn-lg animate-pulse-glow">
+                Subscribe Now — From £29.99/mo
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
-  );
+  )
 }

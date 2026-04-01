@@ -1,7 +1,20 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
+import path from 'path'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'zmgxsrukppxqnvcbsbiy.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/**',
+      },
+    ],
+  },
+}
 
-export default nextConfig;
+export default nextConfig
