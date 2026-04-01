@@ -34,9 +34,9 @@ function LoginForm() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', position: 'relative', isolation: 'isolate' }}>
       <div className="orb orb-purple" style={{ width: 500, height: 500, top: -100, right: -100, opacity: 0.3 }} />
-      <div style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }}>
+      <div style={{ width: '100%', maxWidth: 400, position: 'relative' }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <Link href="/" className="navbar-logo" style={{ display: 'inline-block', marginBottom: '1.5rem', fontSize: '1.8rem' }}>GolfGive</Link>
           <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Welcome back</h1>

@@ -697,9 +697,11 @@ section { padding: 6rem 0; }
   filter: blur(80px);
   opacity: 0.4;
   pointer-events: none;
+  z-index: -1;
 }
 .orb-purple { background: rgba(168,85,247,0.4); }
 .orb-pink { background: rgba(236,72,153,0.3); }
+
 
 /* ─── ANIMATIONS ────────────────────────────────────────────── */
 @keyframes fadeInUp {
