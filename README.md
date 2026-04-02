@@ -9,7 +9,7 @@
 
 | Environment | URL |
 |---|---|
-| Production | [https://digital-heros.vercel.app](https://digital-heros.vercel.app) *(deploy via Vercel)* |
+| Production | [https://digital-heros-red.vercel.app/](https://digital-heros.vercel.app) *(deploy via Vercel)* |
 | GitHub | [https://github.com/rishibabel02/DigitalHeros](https://github.com/rishibabel02/DigitalHeros) |
 
 ---
