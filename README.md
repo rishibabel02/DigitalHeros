@@ -10,7 +10,7 @@
 | Environment | URL |
 |---|---|
 | Production | [https://digital-heros.vercel.app](https://digital-heros.vercel.app) *(deploy via Vercel)* |
-| GitHub | [https://github.com/xyzError404/DigitalHeros](https://github.com/xyzError404/DigitalHeros) |
+| GitHub | [https://github.com/rishibabel02/DigitalHeros](https://github.com/rishibabel02/DigitalHeros) |
 
 ---
 
@@ -18,13 +18,10 @@
 
 | Role | Email | Password |
 |---|---|---|
-| **User** | user@golfgive.com | *(set after signup)* |
-| **Admin** | admin@golfgive.com | *(set after promoting via SQL)* |
+| **User** | `rishi.babel4@gmail.com` | `11111111` |
+| **Admin** | `x@gmail.com` | `00000000` |
 
-> 💡 To promote a user to admin, run in Supabase SQL Editor:
-> ```sql
-> UPDATE profiles SET role = 'admin' WHERE email = 'your@email.com';
-> ```
+*(These accounts are already fully set up in the production database with active subscriptions and corresponding roles).*
 
 ---
 
@@ -93,7 +90,7 @@
 
 ### 2. Clone & Install
 ```bash
-git clone https://github.com/xyzError404/DigitalHeros.git
+git clone https://github.com/rishibabel02/DigitalHeros.git
 cd DigitalHeros/golf-platform
 npm install
 ```
@@ -236,10 +233,10 @@ golf-platform/
 
 ## 📄 Submission Info
 
-- **Live URL**: *(add Vercel URL here after deployment)*
-- **GitHub**: [https://github.com/xyzError404/DigitalHeros](https://github.com/xyzError404/DigitalHeros)
-- **Test User**: *(add credentials after first signup)*
-- **Admin**: *(add credentials after promoting via SQL)*
+- **Live URL**: [https://digital-heros.vercel.app](https://digital-heros.vercel.app) *(or https://digital-heros-red.vercel.app depending on Vercel assigned domain)*
+- **GitHub**: [https://github.com/rishibabel02/DigitalHeros](https://github.com/rishibabel02/DigitalHeros)
+- **Test User**: `rishi.babel4@gmail.com`
+- **Admin**: `x@gmail.com`
 
 ---
 
