@@ -14,6 +14,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
-  await handleStripeWebhook(event)
-  return NextResponse.json({ received: true })
+  try {
+    await handleStripeWebhook(event)
+    return NextResponse.json({ received: true })
+  } catch (err: any) {
+    console.error('Webhook handler failed:', err.message || err)
+    return NextResponse.json({ error: 'Webhook processing failed', details: err.message }, { status: 500 })
+  }
 }

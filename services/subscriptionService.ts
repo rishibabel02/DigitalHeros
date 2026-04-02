@@ -53,7 +53,7 @@ export async function handleStripeWebhook(event: any) {
       const amount = stripeSub.items.data[0].price.unit_amount || 0
 
 
-      await supabase.from('subscriptions').upsert({
+      const { error: upsertError } = await supabase.from('subscriptions').upsert({
         user_id: userId,
         plan,
         status: 'active',
@@ -62,6 +62,11 @@ export async function handleStripeWebhook(event: any) {
         stripe_subscription_id: stripeSubId,
         amount,
       }, { onConflict: 'stripe_subscription_id' })
+
+      if (upsertError) {
+        console.error('Webhook Supabase Upsert Error:', upsertError)
+        throw new Error(upsertError.message)
+      }
 
       // Record charity donation for this billing period
       const { data: userCharity } = await supabase
