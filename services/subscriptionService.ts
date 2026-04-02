@@ -49,8 +49,20 @@ export async function handleStripeWebhook(event: any) {
       const stripeSubId = session.subscription
 
       const stripeSub = await stripe.subscriptions.retrieve(stripeSubId) as any
-      const renewalDate = new Date(stripeSub.current_period_end * 1000).toISOString()
-      const amount = stripeSub.items.data[0].price.unit_amount || 0
+      let renewalDate
+      try {
+        const periodEnd = stripeSub?.current_period_end
+        if (periodEnd) {
+          renewalDate = new Date(periodEnd * 1000).toISOString()
+        } else {
+          // Fallback: 30 days from now
+          renewalDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      } catch (e) {
+        renewalDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      }
+      
+      const amount = stripeSub?.items?.data?.[0]?.price?.unit_amount || 0
 
 
       const { error: upsertError } = await supabase.from('subscriptions').upsert({
@@ -106,7 +118,18 @@ export async function handleStripeWebhook(event: any) {
       const userId = await getUserIdFromCustomer(stripeSub.customer)
       if (!userId) break
 
-      const renewalDate = new Date(stripeSub.current_period_end * 1000).toISOString()
+      let renewalDate
+      try {
+        const periodEnd = stripeSub?.current_period_end
+        if (periodEnd) {
+          renewalDate = new Date(periodEnd * 1000).toISOString()
+        } else {
+          renewalDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      } catch (e) {
+        renewalDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      }
+
       let status: 'active' | 'inactive' | 'lapsed' | 'cancelled' = 'active'
 
       if (stripeSub.status === 'canceled') status = 'cancelled'
