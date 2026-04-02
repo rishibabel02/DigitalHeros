@@ -47,7 +47,8 @@ export async function middleware(request: NextRequest) {
       .from('profiles')
       .select('role')
       .eq('id', user.id)
-      .single()
+      .limit(1)
+      .maybeSingle()
 
     if (!profile || profile.role !== 'admin') {
       if (pathname.startsWith('/api/')) {
@@ -68,7 +69,8 @@ export async function middleware(request: NextRequest) {
       .from('subscriptions')
       .select('status')
       .eq('user_id', user.id)
-      .single()
+      .limit(1)
+      .maybeSingle()
 
     if (!subscription || subscription.status !== 'active') {
       return NextResponse.json(
